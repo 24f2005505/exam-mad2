@@ -1,0 +1,108 @@
+{% raw %}
+<template id="admin-examiner">
+<div class="container-fluid mt-4 mb-4">
+    <h2>Examiner Management</h2>
+    <form @submit.prevent="load" class="d-flex">
+        <div class = "col-6 me-2">
+          <input type ="text" v-model.trim="query" class="form-control" placeholder="Search for examiners by name, email, department and id.">
+		</div>
+		<div class = "col-3 me-2">
+            <button type="submit" class="btn btn-primary">Search</button>
+           <button type="button" class="btn btn-primary ms-1" @click="query = ''; load()">Reset</button>
+        </div>
+	</form>
+</div>
+
+<h3 class = "mb-4 mt-4">{{ editingId ? 'Edit Examiner' : 'Add Examiner' }}</h3>
+<form @submit.prevent="save">
+    <div class = "row mb-3">
+        <div class ="col">
+            <label> First Name </label>
+            <input type = "text" class = "form-control" placeholder="First name" v-model.trim="form.fname" required>
+       </div>
+        <div class = "col">
+            <label> Last Name</label>
+		    <input type = "text" class = "form-control" placeholder="Last name" v-model.trim="form.lname" required>
+        </div>
+    </div>
+
+    	<div class = "row mb-3">
+        <div v-if="!editingId" class = "col">
+            <label> Username </label>
+            <input type = "text" class = "form-control" placeholder="username" maxlength="80" v-model.trim="form.username" required>
+      </div>
+       <div class = "col">
+            <label> Email </label>
+            <input type = "email" class = "form-control" placeholder="first_last@gmail.com" v-model.trim="form.email" required>
+        </div>
+    </div>
+
+    <div class = "row mb-3">
+        <div v-if="!editingId" class = "col">
+            <label> Password </label>
+			<input type = "password" class = "form-control" placeholder="Password" v-model="form.password" required>
+           </div>
+        <div class = "col">
+            <label> Department </label>
+            <input type = "text" class = "form-control" placeholder="Computer Science" v-model.trim="form.department" required>
+          </div>
+        <div class = "col">
+            <label> Contact Details </label>
+              <input type = "text" class = "form-control" placeholder="Phone number" v-model.trim="form.contact_details" required>
+        </div>
+	    <div v-if="editingId" class = "col">
+            <label> Status </label>
+            <select class = "form-select" v-model="form.status">
+                <option value="active">Active</option>
+                <option value="inactive">Inactive (can not log in)</option>
+            </select>
+         </div>
+    </div>
+
+  <div class="row mb-3">
+        <div class = "col">
+	        <button type = "submit" class="btn btn-primary">{{ editingId ? 'Save Changes' : 'Add Examiner' }}</button>
+            <button v-if="editingId" type = "button" class="btn btn-secondary ms-1" @click="resetForm">Cancel</button>
+        </div>
+    </div>
+</form>
+
+<h3 class = "text-center mb-4 mt-4">All Examiners</h3>
+<div class = "container bg-light mb-5 table-box">
+    <table v-if="examiners.length" class = "table-striped table-bordered">
+       <thead>
+        <tr>
+        <th class="px-3 py-2">ID</th>
+        <th class="px-3 py-2">Examiner Name</th>
+         <th class="px-3 py-2">Examiner Email</th>
+        <th class="px-3 py-2">Department</th>
+       <th class="px-3 py-2">Contact</th>
+        <th class="px-3 py-2">Examinations</th>
+        <th class="px-3 py-2">Slots</th>
+        <th class="px-3 py-2">Status</th>
+      <th class="px-3 py-2">Actions</th>
+        </tr>
+         </thead>
+        <tbody>
+        <tr v-for="examiner in examiners" :key="examiner.id">
+            <td class="px-3 py-2">{{ examiner.id }}</td>
+               <td class="px-3 py-2">{{ examiner.name }}</td>
+		    <td class="px-3 py-2">{{ examiner.email }}</td>
+           <td class="px-3 py-2">{{ examiner.department }}</td>
+            <td class="px-3 py-2">{{ examiner.contact_details }}</td>
+            <td class="px-3 py-2">{{ examiner.assigned_examinations }}</td>
+            <td class="px-3 py-2">{{ examiner.total_slots }}</td>
+            <td class="px-3 py-2">{{ label(examiner.status) }}</td>
+            <td class="px-2 py-2 text-nowrap">
+                <button class="btn btn-primary btn-sm me-1" @click="edit(examiner)">Edit</button>
+                <button class="btn btn-sm" :class="examiner.status === 'active' ? 'btn-warning' : 'btn-success'" @click="toggleStatus(examiner)">{{ examiner.status === 'active' ? 'Deactivate' : 'Activate' }}</button>
+             </td>
+        </tr>
+        </tbody>
+    </table>
+    <div v-else class="row p-4 text-center">
+       <span class= "fs-5">No data to show.</span>
+    </div>
+</div>
+</template>
+{% endraw %}

@@ -1,0 +1,65 @@
+{% raw %}
+<template id="examiner-examination">
+<div class="container-fluid mt-4 mb-4">
+    <h2>My Examinations</h2>
+    <p class="text-muted">You can create slots for an examination only while admin has slot creation open.</p>
+</div>
+
+<!-- create a slot for one examination -->
+<div v-if="slotExam" class="card shadow-sm mb-4 border-primary">
+    <div class="card-header"><b>Create slot for {{ slotExam.examination_name }}</b> (duration {{ slotExam.duration }} min, booking starts {{ dt(slotExam.slot_booking_start) }})</div>
+    <div class="card-body">
+        <form @submit.prevent="createSlot">
+            <div class = "row mb-3">
+                <div class = "col-md">
+                  <label> Date </label>
+                    <input type = "date" class = "form-control" v-model="form.date" required>
+	            </div>
+                   <div class = "col-md">
+                    <label> Start Time </label>
+                      <input type = "time" class = "form-control" v-model="form.start_time" required>
+                </div>
+               <div class = "col-md">
+                      <label> End Time </label>
+                   <input type = "time" class = "form-control" v-model="form.end_time" required>
+                </div>
+          </div>
+            <div class = "row mb-3">
+                  <div class = "col-md">
+                    <label> Maximum Student Capacity </label>
+                   <input type = "number" min="1" class = "form-control" v-model="form.max_student_capacity" required>
+                </div>
+                <div class = "col-md">
+		            <label> Meeting Link (optional) </label>
+                    <input type = "url" class = "form-control" placeholder="https://meet.google.com/..." v-model.trim="form.meeting_link">
+                </div>
+            </div>
+          <button type = "submit" class="btn btn-primary btn-sm">Create Slot</button>
+             <button type = "button" class="btn btn-secondary btn-sm ms-1" @click="slotExam = null">Cancel</button>
+        </form>
+    	</div>
+</div>
+
+<div v-for="exam in examinations" :key="exam.id" class="card shadow-sm mb-3">
+    <div class="card-body">
+        <h5 class="card-title">{{ exam.examination_name }} <small class="text-muted">{{ exam.course_code }} - {{ exam.course_name }}</small></h5>
+         <div class="row">
+            <div class="col-md-4"><b>Type:</b> {{ label(exam.examination_type) }}</div>
+            <div class="col-md-4"><b>Duration:</b> {{ exam.duration }} min</div>
+            <div class="col-md-4"><b>Maximum Marks:</b> {{ exam.maximum_marks }}</div>
+            <div class="col-md-6"><b>Slot Creation:</b> {{ dt(exam.slot_creation_start) }} to {{ dt(exam.slot_creation_end) }}</div>
+              <div class="col-md-6"><b>Slot Booking:</b> {{ dt(exam.slot_booking_start) }} to {{ dt(exam.slot_booking_end) }}</div>
+			<div class="col-md-4"><b>Status:</b> {{ label(exam.status) }}</div>
+            <div class="col-md-4"><b>Slots / Bookings:</b> {{ exam.total_slots }} / {{ exam.total_bookings }}</div>
+			<div class="col-md-4"><b>Rubric criteria:</b> {{ exam.total_rubrics }}</div>
+             <div class="col-12"><b>Instructions:</b> {{ exam.instructions || 'None' }}</div>
+          </div>
+        <button v-if="exam.can_create_slots" class="btn btn-primary btn-sm mt-2" @click="openCreate(exam)">Create Slot</button>
+        <span v-else class="badge bg-secondary mt-2">Slot creation is closed</span>
+    </div>
+</div>
+<div v-if="!examinations.length" class="row p-4 text-center">
+  <span class= "fs-5">No examinations assigned yet.</span>
+</div>
+</template>
+{% endraw %}

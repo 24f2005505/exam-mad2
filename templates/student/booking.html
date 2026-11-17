@@ -1,0 +1,44 @@
+{% raw %}
+<template id="student-booking">
+<div class="container-fluid mt-4 mb-4">
+    <h2>My Bookings / Examination History</h2>
+    <p class="text-muted">You can cancel a booking before the booking deadline. Marks show up after admin publishes the results.</p>
+</div>
+
+<div class = "container bg-light mb-5 table-box">
+    <table v-if="bookings.length" class = "table-striped table-bordered">
+        <thead>
+      <tr>
+        <th class="px-3 py-2">Examination</th>
+        <th class="px-3 py-2">Slot</th>
+        <th class="px-3 py-2">Examiner</th>
+        <th class="px-3 py-2">Booked On</th>
+        <th class="px-3 py-2">Status</th>
+        <th class="px-3 py-2">Marks</th>
+        <th class="px-3 py-2">Examiner Remarks</th>
+        <th class="px-3 py-2">Action</th>
+	    </tr>
+        </thead>
+        <tbody>
+        <tr v-for="booking in bookings" :key="booking.id">
+            <td class="px-3 py-2">{{ booking.examination_name }} ({{ booking.course_code }})</td>
+            <td class="px-3 py-2">{{ booking.date }} {{ booking.start_time }}-{{ booking.end_time }}
+                 <a v-if="booking.meeting_link && booking.status === 'booked'" :href="booking.meeting_link" target="_blank" class="d-block">Meeting link</a>
+          </td>
+            <td class="px-3 py-2">{{ booking.examiner_name }}</td>
+           <td class="px-3 py-2">{{ dt(booking.booking_date) }}</td>
+             <td class="px-3 py-2">{{ label(booking.status) }}</td>
+              <td class="px-3 py-2">{{ booking.evaluation ? booking.evaluation.total_marks + ' / ' + booking.maximum_marks : (booking.status === 'completed' ? 'Not published' : '-') }}</td>
+            <td class="px-3 py-2">{{ booking.evaluation ? booking.evaluation.remarks : '' }}</td>
+            <td class="px-2 py-2">
+              <button v-if="booking.can_cancel" class="btn btn-danger btn-sm" @click="cancel(booking)">Cancel</button>
+            </td>
+        </tr>
+		</tbody>
+    </table>
+    	<div v-else class="row p-4 text-center">
+        <span class= "fs-5">No bookings yet.</span>
+    </div>
+</div>
+</template>
+{% endraw %}

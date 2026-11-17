@@ -1,0 +1,52 @@
+{% raw %}
+<template id="admin-student">
+<div class="container-fluid mt-4 mb-4">
+    <h2>Student Management</h2>
+    <form @submit.prevent="load" class="d-flex">
+        <div class = "col-6 me-2">
+            <input type ="text" v-model.trim="query" class="form-control" placeholder="Search for students by name, email and student id.">
+        </div>
+        <div class = "col-3 me-2">
+            <button type="submit" class="btn btn-primary">Search</button>
+            <button type="button" class="btn btn-primary ms-1" @click="query = ''; load()">Reset</button>
+           </div>
+    </form>
+</div>
+
+<div class = "container bg-light mb-5 table-box">
+    <table v-if="students.length" class = "table-striped table-bordered">
+        <thead>
+	    <tr>
+      <th class="px-3 py-2">Student ID</th>
+        <th class="px-3 py-2">Student Name</th>
+       <th class="px-3 py-2">Student Email</th>
+        <th class="px-3 py-2">Student University</th>
+        <th class="px-3 py-2">Major</th>
+        <th class="px-3 py-2">CGPA</th>
+        <th class="px-3 py-2">Bookings</th>
+        <th class="px-3 py-2">Ban Status</th>
+        <th class="px-3 py-2">Action</th>
+        </tr>
+        </thead>
+	    <tbody>
+	    <tr v-for="student in students" :key="student.id">
+               <td class="px-3 py-2">{{ student.id }}</td>
+            <td class="px-3 py-2">{{ student.name }}</td>
+            <td class="px-3 py-2">{{ student.email }}</td>
+            <td class="px-3 py-2">{{ student.university }}</td>
+            <td class="px-3 py-2">{{ student.major }}</td>
+            <td class="px-3 py-2">{{ student.gpa }}</td>
+            <td class="px-3 py-2">{{ student.total_bookings }}</td>
+            <td class="px-3 py-2">{{ student.banned ? 'Banned' : 'Not Banned' }}</td>
+          <td class="px-2 py-2">
+			    <button class="btn btn-sm" :class="student.banned ? 'btn-success' : 'btn-danger'" @click="toggleBan(student)">{{ student.banned ? 'Unban' : 'Ban' }}</button>
+          </td>
+        </tr>
+        </tbody>
+	</table>
+   <div v-else class="row p-4 text-center">
+       <span class= "fs-5">No data to show.</span>
+    </div>
+</div>
+</template>
+{% endraw %}

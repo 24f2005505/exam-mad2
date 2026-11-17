@@ -1,0 +1,132 @@
+{% raw %}
+<template id="student-dashboard">
+<div class="container-fluid mt-1">
+	<div class="row min-vh-100">
+         <div class="col-md-3 bg-dark text-light p-3">
+		    <h3>Student Menu</h3>
+               <ul class="nav flex-column">
+                <li v-for="item in menu" class="nav-item">
+			        <a class="nav-link text-light" :class="{ 'fw-bold': page === item.page }" href="#" @click.prevent="open(item.page)">{{ item.name }}</a>
+                </li>
+	        </ul>
+        </div>
+
+        <div class="col-md-9 p-4">
+
+            <div v-if="page === 'dashboard'" class = "container">
+                <div class = "row">
+
+		            <div class="card shadow-sm mb-4 bg-info">
+                          <div class="card-body">
+                            <h5 class="card-title">Name</h5>
+                            <p class="card-text">{{stats.my_name}}</p>
+                       </div>
+
+                        <div class="card-body">
+                           <h5 class="card-title">University</h5>
+                            <p class="card-text">{{stats.my_university}}</p>
+                           </div>
+
+                   </div>
+
+                    <div class="card shadow-sm mb-4 bg-info">
+                        <div class="card-body">
+					        <h5 class="card-title">Available Examinations</h5>
+                            <p class="card-text">{{stats.available_examinations}}</p>
+                        </div>
+
+                        <div class="card-body">
+                               <h5 class="card-title">Available Slots</h5>
+                            <p class="card-text">{{stats.available_slots}}</p>
+		                </div>
+
+                    </div>
+
+				    <div class="card shadow-sm mb-4 bg-warning">
+                        <div class="card-body">
+                            <h5 class="card-title">Upcoming Examinations</h5>
+                            <p class="card-text">{{stats.upcoming_examinations}}</p>
+                        </div>
+
+                       <div class="card-body">
+                            <h5 class="card-title">Booked Slots</h5>
+                            	<p class="card-text">{{stats.booked_slots}}</p>
+                        </div>
+
+                        <div class="card-body">
+                            <h5 class="card-title">Published Results</h5>
+                            <p class="card-text">{{stats.published_results}}</p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="mb-4">
+                    <button class="btn btn-primary" :disabled="exporting" @click="exportCsv">{{ exporting ? 'Exporting...' : 'Export Examination History (CSV)' }}</button>
+                    <a v-if="downloadUrl" :href="downloadUrl" class="btn btn-success ms-2">Download CSV</a>
+                </div>
+
+                <h3 class = "text-center mb-4 mt-4">Upcoming Examinations</h3>
+	            <div class = "container bg-light mb-5 table-box">
+                    <table v-if="upcoming.length" class = "table-striped table-bordered">
+                        <thead>
+                        <tr>
+                        <th class="px-3 py-2">Examination</th>
+                        <th class="px-3 py-2">Date</th>
+                        <th class="px-3 py-2">Time</th>
+                       <th class="px-3 py-2">Examiner</th>
+                           <th class="px-3 py-2">Meeting Link</th>
+                        	<th class="px-3 py-2">Instructions</th>
+                      </tr>
+					    </thead>
+                        <tbody>
+					    <tr v-for="booking in upcoming" :key="booking.id">
+                            <td class="px-3 py-2">{{ booking.examination_name }} ({{ booking.course_code }})</td>
+                           <td class="px-3 py-2">{{ booking.date }}</td>
+                            <td class="px-3 py-2">{{ booking.start_time }} - {{ booking.end_time }}</td>
+                            <td class="px-3 py-2">{{ booking.examiner_name }}</td>
+                            <td class="px-3 py-2"><a v-if="booking.meeting_link" :href="booking.meeting_link" target="_blank">Join</a></td>
+                               <td class="px-3 py-2">{{ booking.instructions }}</td>
+				        </tr>
+                      </tbody>
+                    	</table>
+                    <div v-else class="row p-4 text-center">
+                        <span class= "fs-5">No upcoming examinations. Book a slot from Examinations.</span>
+                    </div>
+                   </div>
+
+                <h3 class = "text-center mb-4 mt-4">Published Results</h3>
+                <div class = "container bg-light mb-5 table-box">
+                    <table v-if="results.length" class = "table-striped table-bordered">
+                        <thead>
+                        <tr>
+                        <th class="px-3 py-2">Examination</th>
+                        <th class="px-3 py-2">Examiner</th>
+                           <th class="px-3 py-2">Marks</th>
+                          <th class="px-3 py-2">Remarks</th>
+                         </tr>
+                           </thead>
+                           <tbody>
+				        <tr v-for="booking in results" :key="booking.id">
+                            <td class="px-3 py-2">{{ booking.examination_name }} ({{ booking.course_code }})</td>
+                            <td class="px-3 py-2">{{ booking.examiner_name }}</td>
+                            <td class="px-3 py-2">{{ booking.evaluation.total_marks }} / {{ booking.maximum_marks }}</td>
+					        <td class="px-3 py-2">{{ booking.evaluation.remarks }}</td>
+                        </tr>
+                          </tbody>
+                    </table>
+                   <div v-else class="row p-4 text-center">
+                        <span class= "fs-5">No results published yet.</span>
+                    </div>
+                   </div>
+             </div>
+
+            <student-examination v-else-if="page === 'examination'"></student-examination>
+            <student-booking v-else-if="page === 'booking'"></student-booking>
+            <student-profile v-else-if="page === 'profile'"></student-profile>
+
+        </div>
+    	</div>
+</div>
+</template>
+{% endraw %}

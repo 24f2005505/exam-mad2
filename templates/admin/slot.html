@@ -1,0 +1,91 @@
+{% raw %}
+<template id="admin-slot">
+<div class="container-fluid mt-4 mb-4">
+    	<h2>Examination Slots</h2>
+    <div class="d-flex">
+         <div class = "col-6 me-2">
+           <select class="form-select" v-model="examFilter" @change="load">
+                <option value="">All examinations</option>
+                <option v-for="exam in examinations" :value="exam.id">{{ exam.examination_name }} ({{ exam.course_code }})</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<!-- reschedule / change examiner of one slot -->
+<div v-if="editingSlot" class="card shadow-sm mb-4 border-primary">
+    <div class="card-header"><b>Reschedule slot of {{ editingSlot.examination_name }}</b> ({{ editingSlot.booked_students }} students booked)</div>
+    <div class="card-body">
+        <form @submit.prevent="save">
+          <div class = "row mb-3">
+                <div class = "col-md">
+                     <label> Date </label>
+                    <input type = "date" class = "form-control" v-model="form.date" required>
+                </div>
+                <div class = "col-md">
+                    <label> Start Time </label>
+                    <input type = "time" class = "form-control" v-model="form.start_time" required>
+              </div>
+                 <div class = "col-md">
+                    <label> End Time </label>
+                    <input type = "time" class = "form-control" v-model="form.end_time" required>
+                </div>
+            </div>
+            <div class = "row mb-3">
+              <div class = "col-md">
+                       <label> Examiner </label>
+                    	<select class = "form-select" v-model="form.examiner_id" required>
+                        <option v-for="examiner in examiners" :value="examiner.id">{{ examiner.name }} ({{ examiner.department }})</option>
+                    </select>
+                </div>
+                  <div class = "col-md">
+                    <label> Capacity </label>
+                    <input type = "number" min="1" class = "form-control" v-model="form.max_student_capacity" required>
+                </div>
+				<div class = "col-md">
+                    <label> Meeting Link </label>
+                    <input type = "url" class = "form-control" placeholder="https://meet.google.com/..." v-model.trim="form.meeting_link">
+                </div>
+            </div>
+            <button type = "submit" class="btn btn-primary btn-sm">Save</button>
+               <button type = "button" class="btn btn-secondary btn-sm ms-1" @click="editingSlot = null">Cancel</button>
+       </form>
+    </div>
+</div>
+
+<div class = "container bg-light mb-5 table-box">
+    <table v-if="slots.length" class = "table-striped table-bordered">
+        <thead>
+        <tr>
+        	<th class="px-3 py-2">Examination</th>
+		<th class="px-3 py-2">Examiner</th>
+        <th class="px-3 py-2">Date</th>
+        <th class="px-3 py-2">Time</th>
+        <th class="px-3 py-2">Booked / Capacity</th>
+        <th class="px-3 py-2">Status</th>
+           <th class="px-3 py-2">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+	    <tr v-for="slot in slots" :key="slot.id">
+            <td class="px-3 py-2">{{ slot.examination_name }} ({{ slot.course_code }})</td>
+          <td class="px-3 py-2">{{ slot.examiner_name }}</td>
+           <td class="px-3 py-2">{{ slot.date }}</td>
+            <td class="px-3 py-2">{{ slot.start_time }} - {{ slot.end_time }}</td>
+            <td class="px-3 py-2">{{ slot.booked_students }} / {{ slot.max_student_capacity }}</td>
+           <td class="px-3 py-2">{{ label(slot.status) }}</td>
+            <td class="px-2 py-2 text-nowrap">
+	            <template v-if="slot.status !== 'cancelled' && slot.status !== 'completed'">
+                    <button class="btn btn-primary btn-sm me-1" @click="edit(slot)">Reschedule</button>
+                    <button class="btn btn-danger btn-sm" @click="cancel(slot)">Cancel</button>
+                </template>
+            </td>
+        </tr>
+        	</tbody>
+    </table>
+    <div v-else class="row p-4 text-center">
+	    <span class= "fs-5">No data to show.</span>
+	</div>
+</div>
+</template>
+{% endraw %}

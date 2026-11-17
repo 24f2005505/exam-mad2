@@ -1,0 +1,87 @@
+{% raw %}
+<template id="student-examination">
+<div class="container-fluid mt-4 mb-4">
+    <h2>Examinations</h2>
+    <form @submit.prevent="load" class="row g-2">
+        <div class = "col-md-5">
+            <input type ="text" v-model.trim="query" class="form-control" placeholder="Search examinations by name or course.">
+        </div>
+        <div class = "col-md-2">
+            <select class="form-select" v-model="type">
+                <option value="">All types</option>
+                <option value="viva">Viva</option>
+                <option value="practical">Practical</option>
+              <option value="project_demo">Project Demo</option>
+               <option value="assessment">Assessment</option>
+            </select>
+        </div>
+	    <div class = "col-md-3">
+            <select class="form-select" v-model="courseId">
+                <option value="">All courses</option>
+                <option v-for="course in courses" :value="course.id">{{ course.name }}</option>
+            	</select>
+		</div>
+        <div class = "col-md-2">
+            <button type="submit" class="btn btn-primary">Search</button>
+            <button type="button" class="btn btn-primary ms-1" @click="query = ''; type = ''; courseId = ''; load()">Reset</button>
+         </div>
+       </form>
+</div>
+
+<!-- slots of one examination -->
+<div v-if="slotExam" class="card shadow-sm mb-4 border-primary">
+    <div class="card-header d-flex justify-content-between">
+        <b>Slots for {{ slotExam.examination_name }}</b>
+        <button class="btn btn-secondary btn-sm" @click="slotExam = null">Close</button>
+    </div>
+    <div class="card-body">
+         <p v-if="!slotExam.booking_open" class="text-danger">Booking is not open now ({{ dt(slotExam.slot_booking_start) }} to {{ dt(slotExam.slot_booking_end) }}).</p>
+        <table v-if="slots.length" class = "table-striped table-bordered w-100">
+              <thead>
+          <tr>
+          <th class="px-3 py-2">Date</th>
+            <th class="px-3 py-2">Time</th>
+            <th class="px-3 py-2">Examiner</th>
+               <th class="px-3 py-2">Seats Left</th>
+            <th class="px-3 py-2">Status</th>
+            <th class="px-3 py-2">Action</th>
+            </tr>
+          </thead>
+            <tbody>
+            <tr v-for="slot in slots" :key="slot.id">
+                <td class="px-3 py-2">{{ slot.date }}</td>
+                	<td class="px-3 py-2">{{ slot.start_time }} - {{ slot.end_time }}</td>
+                 <td class="px-3 py-2">{{ slot.examiner_name }}</td>
+              <td class="px-3 py-2">{{ slot.available_seats }} / {{ slot.max_student_capacity }}</td>
+                  <td class="px-3 py-2">{{ label(slot.status) }}</td>
+                <td class="px-2 py-2">
+                    <button v-if="slotExam.booking_open && slot.status === 'available' && !hasBooking(slotExam)" class="btn btn-success btn-sm" @click="book(slot)">Book</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <p v-else>No slots yet for this examination.</p>
+    </div>
+</div>
+
+<div v-for="exam in examinations" :key="exam.id" class="card shadow-sm mb-3">
+   <div class="card-body">
+        	<h5 class="card-title">{{ exam.examination_name }} <small class="text-muted">{{ exam.course_code }} - {{ exam.course_name }}</small></h5>
+        <div class="row">
+		    <div class="col-md-4"><b>Type:</b> {{ label(exam.examination_type) }}</div>
+            <div class="col-md-4"><b>Duration:</b> {{ exam.duration }} min</div>
+            <div class="col-md-4"><b>Maximum Marks:</b> {{ exam.maximum_marks }}</div>
+            	<div class="col-md-6"><b>Booking Period:</b> {{ dt(exam.slot_booking_start) }} to {{ dt(exam.slot_booking_end) }}</div>
+             <div class="col-md-3"><b>Status:</b> {{ label(exam.status) }}</div>
+            <div class="col-md-3"><b>My Booking:</b> {{ exam.my_booking ? label(exam.my_booking) : 'Not booked' }}</div>
+               <div class="col-12"><b>Instructions:</b> {{ exam.instructions || 'None' }}</div>
+        </div>
+      <button class="btn btn-primary btn-sm mt-2" @click="showSlots(exam)">View Slots</button>
+      <span v-if="exam.booking_open" class="badge bg-success ms-2">Booking open</span>
+    </div>
+</div>
+<div v-if="!examinations.length" class="row p-4 text-center">
+    <span class= "fs-5">No examinations found.</span>
+</div>
+</template>
+{% endraw %}

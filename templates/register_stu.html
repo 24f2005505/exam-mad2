@@ -1,0 +1,104 @@
+{% raw %}
+<template id="register-stu">
+<div class = "container-fluid align-items-center justify-content-center">
+    <div class = "row text-left text-danger">
+          <div class = "col-12">*All fields are required.</div>
+       </div>
+</div>
+
+<form @submit.prevent="register">
+<div class = "container-fluid mt-5 min-vh-100 align-items-center justify-content-center">
+      <div class = "row mb-3">
+        <div class ="col">
+            <label> First Name </label>
+            <input type = "text" class = "form-control" placeholder="First name" v-model.trim="form.fname" required>
+        </div>
+
+          <div class = "col">
+            <label> Last Name</label>
+            <input type = "text" class = "form-control" placeholder="Last name" v-model.trim="form.lname" required>
+        </div>
+
+    	</div>
+
+    <div class = "row mb-3">
+        <div class = "col">
+          <label> Username </label>
+           <input type = "text" class = "form-control" placeholder="username" maxlength="80" v-model.trim="form.username" required>
+         </div>
+
+        <div class = "col">
+              <label> Email </label>
+            <input type = "email" class = "form-control" placeholder="first_last@gmail.com" v-model.trim="form.email" required>
+           </div>
+	</div>
+
+
+      <div class = "row mb-3">
+        <div class = "col">
+            <label> Password </label>
+			<input type = "password" class = "form-control" placeholder="Password" v-model="form.password" required>
+           </div>
+
+        <div class = "col">
+             <label> Retype Password </label>
+            <input type = "password" class = "form-control" placeholder="Password" v-model="form.con_password" required>
+        </div>
+    	</div>
+
+
+
+    <div class="form-check">
+       <div class = "row mb-3">
+        <label class = "form-label"> Choose gender </label>
+        <div class ="col-6 form-check">
+            <input class = "form-check-input" type = "radio" value = "male" v-model="form.gender" required>
+            <label class = "form-check-label">Male</label>
+        </div>
+
+        <div class = "col-6 form-check">
+            <input class = "form-check-input" type = "radio" value="female" v-model="form.gender" required>
+            <label class = "form-check-label">Female</label>
+        </div>
+        <div class = "col-6 form-check">
+            <input class = "form-check-input" type = "radio" value="non-binary" v-model="form.gender" required>
+            <label class = "form-check-label">Non-binary</label>
+        </div>
+        <div class = "col-6 form-check">
+            <input class = "form-check-input" type = "radio" value="other" v-model="form.gender" required>
+            <label class = "form-check-label">Other</label>
+      </div>
+    </div>
+    	</div>
+
+
+
+
+    <div class="row mb-3">
+      <div class = "col">
+            <label> University Name </label>
+            <input type = "text" class = "form-control" placeholder="IIT, Madras" v-model.trim="form.university_name" required>
+         </div>
+
+		<div class = "col">
+             <label> Major </label>
+            <input type = "text" class = "form-control" placeholder="Computer Science Engineering" v-model.trim="form.major" required>
+       </div>
+
+        <div class = "col">
+            <label> CGPA </label>
+           <input type = "text" class = "form-control" placeholder="10/10" v-model.trim="form.gpa" required>
+       </div>
+    </div>
+
+
+  <div class="row mb-5">
+      <div class = "col">
+            <button type = "submit" class="btn btn-primary">Register</button>
+        </div>
+    </div>
+
+</div>
+</form>
+</template>
+{% endraw %}

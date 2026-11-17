@@ -1,0 +1,82 @@
+{% raw %}
+<template id="admin-report">
+<div class="container-fluid mt-4 mb-4">
+    <h2>Examination Reports and Statistics</h2>
+</div>
+
+<div class="row mb-4">
+       <div class="col-md-6">
+        <h5 class="text-center">Bookings per examination</h5>
+        <div class="chart-box"><canvas ref="bookingChart"></canvas></div>
+    </div>
+    <div class="col-md-6">
+        <h5 class="text-center">Examiner workload</h5>
+        <div class="chart-box"><canvas ref="examinerChart"></canvas></div>
+    </div>
+</div>
+
+<h3 class = "text-center mb-4 mt-4">Examinations</h3>
+<div class = "container bg-light mb-5 table-box">
+   <table v-if="examinations.length" class = "table-striped table-bordered">
+      <thead>
+          <tr>
+          <th class="px-3 py-2">Examination</th>
+        <th class="px-3 py-2">Status</th>
+        <th class="px-3 py-2">Slots</th>
+        <th class="px-3 py-2">Bookings</th>
+         <th class="px-3 py-2">Evaluated</th>
+        <th class="px-3 py-2">Average Marks</th>
+        <th class="px-3 py-2">Results</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="exam in examinations" :key="exam.id">
+            <td class="px-3 py-2">{{ exam.examination_name }} ({{ exam.course_code }})</td>
+		    <td class="px-3 py-2">{{ label(exam.status) }}</td>
+            <td class="px-3 py-2">{{ exam.total_slots }}</td>
+            	<td class="px-3 py-2">{{ exam.total_bookings }}</td>
+          <td class="px-3 py-2">{{ exam.evaluated }}</td>
+              <td class="px-3 py-2">{{ exam.average_marks === null ? '-' : exam.average_marks + ' / ' + exam.maximum_marks }}</td>
+            <td class="px-3 py-2">{{ exam.results_published ? 'Published' : 'Not published' }}</td>
+         </tr>
+        </tbody>
+    </table>
+    <div v-else class="row p-4 text-center">
+        <span class= "fs-5">No data to show.</span>
+       </div>
+</div>
+
+<h3 class = "text-center mb-4 mt-4">Examiners</h3>
+<div class = "container bg-light mb-5 table-box">
+    <table v-if="examiners.length" class = "table-striped table-bordered">
+        	<thead>
+        <tr>
+        <th class="px-3 py-2">Examiner</th>
+		<th class="px-3 py-2">Department</th>
+      <th class="px-3 py-2">Slots</th>
+        <th class="px-3 py-2">Booked Students</th>
+        <th class="px-3 py-2">Evaluations Done</th>
+        <th class="px-3 py-2">Pending Evaluations</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="examiner in examiners" :key="examiner.id">
+           <td class="px-3 py-2">{{ examiner.name }}</td>
+           <td class="px-3 py-2">{{ examiner.department }}</td>
+            <td class="px-3 py-2">{{ examiner.total_slots }}</td>
+            <td class="px-3 py-2">{{ examiner.booked_students }}</td>
+            <td class="px-3 py-2">{{ examiner.evaluations_done }}</td>
+            <td class="px-3 py-2">{{ examiner.pending_evaluations }}</td>
+       </tr>
+      </tbody>
+    </table>
+    <div v-else class="row p-4 text-center">
+	    <span class= "fs-5">No data to show.</span>
+	</div>
+</div>
+</template>
+{% endraw %}
+
+<style>
+    .chart-box { position: relative; height: 300px; }  /* chart.js needs a parent with a height */
+</style>

@@ -1,0 +1,151 @@
+{% raw %}
+<template id="admin-examination">
+<div class="container-fluid mt-4 mb-4">
+    <h2>Examination Management</h2>
+    <form @submit.prevent="load" class="d-flex">
+        <div class = "col-6 me-2">
+            <input type ="text" v-model.trim="query" class="form-control" placeholder="Search for examinations by name, course, type and status.">
+        </div>
+        <div class = "col-3 me-2">
+             <button type="submit" class="btn btn-primary">Search</button>
+            <button type="button" class="btn btn-primary ms-1" @click="query = ''; load()">Reset</button>
+        </div>
+  </form>
+</div>
+
+<!-- rubric of one examination (opens when Rubric is clicked) -->
+<admin-rubric v-if="rubricExam" :examination="rubricExam" @close="rubricExam = null; load()"></admin-rubric>
+
+<!-- assign examiners to one examination -->
+<div v-if="assignExam" class="card shadow-sm mb-4">
+    <div class="card-header"><b>Assign examiners to {{ assignExam.examination_name }}</b></div>
+    <div class="card-body">
+        <div v-for="examiner in examiners" class="form-check">
+            <input class="form-check-input" type="checkbox" :id="'assign' + examiner.id" :value="examiner.id" v-model="assignIds">
+            <label class="form-check-label" :for="'assign' + examiner.id">{{ examiner.name }} ({{ examiner.department }}) <span v-if="examiner.status !== 'active'" class="text-danger">inactive</span></label>
+          </div>
+        <p v-if="!examiners.length">No examiners yet. Add them from the Examiners menu.</p>
+        <button class="btn btn-primary btn-sm mt-2" @click="saveAssign">Save</button>
+        <button class="btn btn-secondary btn-sm mt-2 ms-1" @click="assignExam = null">Close</button>
+    </div>
+</div>
+
+<h3 class = "mb-4 mt-4">{{ editingId ? 'Edit Examination' : 'Add Examination' }}</h3>
+<form @submit.prevent="save">
+    <div class = "row mb-3">
+         <div class = "col-md">
+		    <label> Course </label>
+           <select class = "form-select" v-model="form.course_id" required>
+                <option disabled value="">Choose course</option>
+                  <option v-for="course in courses" :value="course.id">{{ course.course_code }} - {{ course.course_name }}</option>
+            </select>
+       </div>
+        <div class = "col-md">
+            <label> Examination Name </label>
+            <input type = "text" class = "form-control" placeholder="Viva 1" maxlength="100" v-model.trim="form.examination_name" required>
+        </div>
+      <div class = "col-md">
+            <label> Examination Type </label>
+               <select class = "form-select" v-model="form.examination_type" required>
+                <option value="viva">Viva</option>
+                <option value="practical">Practical</option>
+              <option value="project_demo">Project Demo</option>
+                <option value="assessment">Assessment</option>
+            </select>
+        </div>
+	</div>
+    <div class = "row mb-3">
+        <div class = "col-md">
+            <label> Duration (minutes) </label>
+            <input type = "number" min="1" class = "form-control" v-model="form.duration" required>
+        </div>
+        <div class = "col-md">
+            <label> Maximum Marks </label>
+            <input type = "number" min="1" step="0.5" class = "form-control" v-model="form.maximum_marks" required>
+       </div>
+    </div>
+    <div class = "row mb-3">
+        <div class = "col-md">
+            <label> Slot Creation Start </label>
+            <input type = "datetime-local" class = "form-control" v-model="form.slot_creation_start" required>
+        </div>
+        <div class = "col-md">
+            <label> Slot Creation End </label>
+            <input type = "datetime-local" class = "form-control" v-model="form.slot_creation_end" required>
+         </div>
+	    <div class = "col-md">
+          <label> Slot Booking Start </label>
+            <input type = "datetime-local" class = "form-control" v-model="form.slot_booking_start" required>
+          </div>
+        	<div class = "col-md">
+            <label> Slot Booking End </label>
+            <input type = "datetime-local" class = "form-control" v-model="form.slot_booking_end" required>
+        </div>
+   </div>
+    <div class = "row mb-3">
+        <div class = "col">
+             <label> Instructions for students </label>
+          <textarea class = "form-control" rows="2" maxlength="500" placeholder="Keep your ID card ready." v-model.trim="form.instructions"></textarea>
+        </div>
+    </div>
+      <div class="row mb-3">
+        <div class = "col">
+            <button type = "submit" class="btn btn-primary">{{ editingId ? 'Save Changes' : 'Add Examination' }}</button>
+            <button v-if="editingId" type = "button" class="btn btn-secondary ms-1" @click="resetForm">Cancel</button>
+        </div>
+	</div>
+</form>
+
+<h3 class = "text-center mb-4 mt-4">All Examinations</h3>
+<p class="text-muted small">Change the status to open / close slot creation and slot booking: Draft → Slot Creation → Booking Open → Closed → Completed.</p>
+<div class = "container bg-light mb-5 table-box">
+    	<table v-if="examinations.length" class = "table-striped table-bordered small">
+          <thead>
+        <tr>
+        <th class="px-2 py-2">Examination</th>
+         <th class="px-2 py-2">Course</th>
+        <th class="px-2 py-2">Type</th>
+        <th class="px-2 py-2">Marks / Duration</th>
+        <th class="px-2 py-2">Slot Creation</th>
+        <th class="px-2 py-2">Slot Booking</th>
+        <th class="px-2 py-2">Status</th>
+          <th class="px-2 py-2">Examiners</th>
+		<th class="px-2 py-2">Slots / Bookings</th>
+        <th class="px-2 py-2">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="exam in examinations" :key="exam.id">
+               <td class="px-2 py-2">{{ exam.examination_name }}</td>
+            <td class="px-2 py-2">{{ exam.course_code }}</td>
+            <td class="px-2 py-2">{{ label(exam.examination_type) }}</td>
+            <td class="px-2 py-2">{{ exam.maximum_marks }} / {{ exam.duration }} min</td>
+             <td class="px-2 py-2">{{ dt(exam.slot_creation_start) }} to {{ dt(exam.slot_creation_end) }}</td>
+            <td class="px-2 py-2">{{ dt(exam.slot_booking_start) }} to {{ dt(exam.slot_booking_end) }}</td>
+            <td class="px-2 py-2">
+                <select class="form-select form-select-sm" :value="exam.status" @change="changeStatus(exam, $event.target.value)">
+                    	<option v-for="status in statuses" :value="status">{{ label(status) }}</option>
+                	</select>
+                <span v-if="exam.results_published" class="badge bg-success mt-1">Results published</span>
+            </td>
+            <td class="px-2 py-2">
+                <span v-for="examiner in exam.examiners" class="d-block">{{ examiner.name }}</span>
+                <span v-if="!exam.examiners.length" class="text-danger">None</span>
+            </td>
+            <td class="px-2 py-2">{{ exam.total_slots }} / {{ exam.total_bookings }}</td>
+            <td class="px-2 py-2">
+                   <button class="btn btn-primary btn-sm mb-1 me-1" @click="edit(exam)">Edit</button>
+			    <button class="btn btn-primary btn-sm mb-1 me-1" @click="openAssign(exam)">Examiners</button>
+                <button class="btn btn-primary btn-sm mb-1 me-1" @click="rubricExam = exam">Rubric ({{ exam.total_rubrics }})</button>
+                <button class="btn btn-sm mb-1 me-1" :class="exam.results_published ? 'btn-warning' : 'btn-success'" @click="togglePublish(exam)">{{ exam.results_published ? 'Unpublish' : 'Publish Results' }}</button>
+                <button class="btn btn-danger btn-sm mb-1" @click="remove(exam)">Delete</button>
+            </td>
+        </tr>
+	    </tbody>
+    </table>
+    <div v-else class="row p-4 text-center">
+        <span class= "fs-5">No data to show.</span>
+    </div>
+</div>
+</template>
+{% endraw %}

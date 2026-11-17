@@ -1,0 +1,64 @@
+{% raw %}
+<template id="admin-rubric">
+<div class="card shadow-sm mb-4 border-primary">
+    <div class="card-header d-flex justify-content-between">
+        <b>Rubric for {{ examination.examination_name }} ({{ examination.course_code }})</b>
+        <button class="btn btn-secondary btn-sm" @click="$emit('close')">Close</button>
+     </div>
+    <div class="card-body">
+	    <p>Total = sum of (marks x weightage) = <b>{{ total }}</b> out of <b>{{ maximumMarks }}</b> examination marks.</p>
+
+        <table v-if="rubrics.length" class = "table-striped table-bordered mb-3 w-100">
+          <thead>
+		    <tr>
+           <th class="px-3 py-2">Criterion</th>
+            <th class="px-3 py-2">Maximum Marks</th>
+            <th class="px-3 py-2">Weightage</th>
+            	<th class="px-3 py-2">Description</th>
+              <th class="px-3 py-2">Actions</th>
+            </tr>
+            	</thead>
+            <tbody>
+            <tr v-for="rubric in rubrics" :key="rubric.id">
+                <td class="px-3 py-2">{{ rubric.criterion_name }}</td>
+                <td class="px-3 py-2">{{ rubric.maximum_marks }}</td>
+                 <td class="px-3 py-2">{{ rubric.weightage }}</td>
+                <td class="px-3 py-2">{{ rubric.description }}</td>
+                <td class="px-2 py-2 text-nowrap">
+                    <button class="btn btn-primary btn-sm me-1" @click="edit(rubric)">Edit</button>
+                    <button class="btn btn-danger btn-sm" @click="remove(rubric)">Delete</button>
+                </td>
+            </tr>
+            </tbody>
+          </table>
+        <p v-else>No criteria yet.</p>
+
+        <h5>{{ editingId ? 'Edit Criterion' : 'Add Criterion' }}</h5>
+       <form @submit.prevent="save">
+            <div class = "row mb-3">
+			    <div class = "col-md">
+                    <label> Criterion Name </label>
+                      <input type = "text" class = "form-control" placeholder="Concept clarity" maxlength="100" v-model.trim="form.criterion_name" required>
+                </div>
+                <div class = "col-md">
+                    <label> Maximum Marks </label>
+                    <input type = "number" min="0.5" step="0.5" class = "form-control" v-model="form.maximum_marks" required>
+			    </div>
+                <div class = "col-md">
+                  <label> Weightage </label>
+                   <input type = "number" min="0.1" step="0.1" class = "form-control" v-model="form.weightage" required>
+               </div>
+            </div>
+            <div class = "row mb-3">
+                <div class = "col">
+                    <label> Description </label>
+                    <input type = "text" class = "form-control" maxlength="500" v-model.trim="form.description">
+                </div>
+            </div>
+            <button type = "submit" class="btn btn-primary btn-sm">{{ editingId ? 'Save Changes' : 'Add Criterion' }}</button>
+            <button v-if="editingId" type = "button" class="btn btn-secondary btn-sm ms-1" @click="resetForm">Cancel</button>
+        </form>
+    </div>
+</div>
+</template>
+{% endraw %}

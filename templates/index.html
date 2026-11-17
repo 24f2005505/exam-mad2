@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<!-- jinja is only used here (entry point) to put all the vue templates + scripts on one page -->
+
+<html lang = "en">
+<head>
+	<meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title> Examination Management Portal </title>
+</head>
+
+<body>
+    <div id="app"></div>
+
+      <!-- vue templates (html part of each component) -->
+   {% include "base.html" %}
+    {% include "login.html" %}
+    {% include "register_stu.html" %}
+
+    	{% include "admin/dashboard.html" %}
+    {% include "admin/course.html" %}
+  {% include "admin/examination.html" %}
+    	{% include "admin/rubric.html" %}
+	{% include "admin/examiner.html" %}
+  {% include "admin/student.html" %}
+    {% include "admin/slot.html" %}
+     {% include "admin/booking.html" %}
+    {% include "admin/report.html" %}
+
+    {% include "examiner/dashboard.html" %}
+   {% include "examiner/examination.html" %}
+    	{% include "examiner/slot.html" %}
+    	{% include "examiner/evaluation.html" %}
+
+   {% include "student/dashboard.html" %}
+  {% include "student/examination.html" %}
+    {% include "student/booking.html" %}
+   {% include "student/profile.html" %}
+
+      <!-- vue and chart.js from cdn -->
+    <script src="https://unpkg.com/vue@3.5.13/dist/vue.global.prod.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+    <!-- vue components (js part of each component), child components before parents, app.js has to be last -->
+    <script src="{{ url_for('static', filename='js/api.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/login.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/register_stu.js') }}"></script>
+
+    	<script src="{{ url_for('static', filename='js/admin/course.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/admin/rubric.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/admin/examination.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/admin/examiner.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/admin/student.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/admin/slot.js') }}"></script>
+    	<script src="{{ url_for('static', filename='js/admin/booking.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/admin/report.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/admin/dashboard.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='js/examiner/examination.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/examiner/slot.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/examiner/evaluation.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/examiner/dashboard.js') }}"></script>
+
+     <script src="{{ url_for('static', filename='js/student/examination.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/student/booking.js') }}"></script>
+     <script src="{{ url_for('static', filename='js/student/profile.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/student/dashboard.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+
+</html>

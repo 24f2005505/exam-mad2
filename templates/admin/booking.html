@@ -1,0 +1,72 @@
+{% raw %}
+<template id="admin-booking">
+<div class="container-fluid mt-4 mb-4">
+    	<h2>Bookings</h2>
+   <form @submit.prevent="load" class="d-flex">
+        <div class = "col-6 me-2">
+	        <input type ="text" v-model.trim="query" class="form-control" placeholder="Search for bookings by student, examination, examiner and status.">
+        </div>
+         <div class = "col-3 me-2">
+            <button type="submit" class="btn btn-primary">Search</button>
+			<button type="button" class="btn btn-primary ms-1" @click="query = ''; load()">Reset</button>
+        </div>
+   </form>
+</div>
+
+<!-- move one booking to another slot (also changes the examiner) -->
+<div v-if="moving" class="card shadow-sm mb-4 border-primary">
+    <div class="card-header"><b>Reschedule {{ moving.student_name }}</b> - {{ moving.examination_name }}, now on {{ moving.date }} {{ moving.start_time }} with {{ moving.examiner_name }}</div>
+    <div class="card-body">
+        <div class="row">
+	        <div class="col-md-8">
+                	<select class="form-select" v-model="newSlotId">
+                    <option disabled value="">Choose the new slot</option>
+                    	<option v-for="slot in slotOptions" :value="slot.id">{{ slot.date }} {{ slot.start_time }}-{{ slot.end_time }} with {{ slot.examiner_name }} ({{ slot.available_seats }} seats left)</option>
+                </select>
+                   <p v-if="!slotOptions.length" class="text-danger mt-2">No other slot with free seats for this examination.</p>
+            </div>
+            <div class="col-md-4">
+                <button class="btn btn-primary" @click="reschedule">Move</button>
+                <button class="btn btn-secondary ms-1" @click="moving = null">Cancel</button>
+            </div>
+       </div>
+     </div>
+</div>
+
+<div class = "container bg-light mb-5 table-box">
+    <table v-if="bookings.length" class = "table-striped table-bordered">
+        	<thead>
+          <tr>
+        <th class="px-3 py-2">ID</th>
+        <th class="px-3 py-2">Student</th>
+        	<th class="px-3 py-2">Examination</th>
+        <th class="px-3 py-2">Examiner</th>
+        <th class="px-3 py-2">Slot</th>
+        <th class="px-3 py-2">Booked On</th>
+        <th class="px-3 py-2">Status</th>
+        	<th class="px-3 py-2">Marks</th>
+        <th class="px-3 py-2">Action</th>
+        </tr>
+           </thead>
+        <tbody>
+       <tr v-for="booking in bookings" :key="booking.id">
+            <td class="px-3 py-2">{{ booking.id }}</td>
+           <td class="px-3 py-2">{{ booking.student_name }}<br><small>{{ booking.student_email }}</small></td>
+            <td class="px-3 py-2">{{ booking.examination_name }} ({{ booking.course_code }})</td>
+            <td class="px-3 py-2">{{ booking.examiner_name }}</td>
+           <td class="px-3 py-2">{{ booking.date }} {{ booking.start_time }}-{{ booking.end_time }}</td>
+            <td class="px-3 py-2">{{ dt(booking.booking_date) }}</td>
+            <td class="px-3 py-2">{{ label(booking.status) }}</td>
+            <td class="px-3 py-2">{{ booking.evaluation ? booking.evaluation.total_marks + ' / ' + booking.maximum_marks : '-' }}</td>
+            <td class="px-2 py-2">
+		        <button v-if="booking.status === 'booked'" class="btn btn-primary btn-sm" @click="openMove(booking)">Reschedule</button>
+            	</td>
+        </tr>
+	    </tbody>
+    	</table>
+    <div v-else class="row p-4 text-center">
+         <span class= "fs-5">No data to show.</span>
+    	</div>
+</div>
+</template>
+{% endraw %}

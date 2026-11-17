@@ -1,0 +1,73 @@
+{% raw %}
+<template id="admin-dashboard">
+<div class="container-fluid mt-1">
+    	<div class="row min-vh-100">
+        <div class="col-md-3 bg-dark text-light p-3">
+	<h3>Admin Menu</h3>
+    <ul class="nav flex-column">
+        <li v-for="item in menu" class="nav-item">
+            <a class="nav-link text-light" :class="{ 'fw-bold': page === item.page }" href="#" @click.prevent="open(item.page)">{{ item.name }}</a>
+   </li>
+</ul>
+</div>
+
+<div class="col-md-9 p-4">
+        <div v-if="page === 'dashboard'" class = "container">
+            <div class = "row">
+
+                    <div class="card shadow-sm mb-4 bg-info">
+					    <div class="card-body">
+                            <h5 class="card-title">Total Courses</h5>
+                            <p class="card-text">{{stats.total_courses}}</p>
+                        </div>
+
+                <div class="card-body">
+                       <h5 class="card-title">Total Examinations</h5>
+                    <p class="card-text">{{stats.total_examinations}}</p>
+                </div>
+
+                </div>
+
+                   <div class="card shadow-sm mb-4 bg-info">
+            <div class="card-body">
+                <h5 class="card-title">Total Students</h5>
+                   <p class="card-text">{{stats.total_students}}</p>
+            </div>
+
+                    <div class="card-body">
+                        <h5 class="card-title">Total Examiners</h5>
+                    	<p class="card-text">{{stats.total_examiners}}</p>
+                   </div>
+
+                </div>
+
+
+               <div class="card shadow-sm mb-4 bg-warning">
+                <div class="card-body">
+                        <h5 class="card-title">Total Examination Slots</h5>
+                        <p class="card-text">{{stats.total_slots}}</p>
+                    </div>
+
+                <div class="card-body">
+                    <h5 class="card-title">Total Bookings</h5>
+                    <p class="card-text">{{stats.total_bookings}}</p>
+						</div>
+
+                 </div>
+
+</div>
+</div>
+
+<admin-course v-else-if="page === 'course'"></admin-course>
+<admin-examination v-else-if="page === 'examination'"></admin-examination>
+<admin-examiner v-else-if="page === 'examiner'"></admin-examiner>
+<admin-student v-else-if="page === 'student'"></admin-student>
+<admin-slot v-else-if="page === 'slot'"></admin-slot>
+<admin-booking v-else-if="page === 'booking'"></admin-booking>
+<admin-report v-else-if="page === 'report'"></admin-report>
+
+           </div>
+    </div>
+</div>
+</template>
+{% endraw %}

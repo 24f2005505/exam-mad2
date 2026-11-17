@@ -1,0 +1,53 @@
+{% raw %}
+<template id="student-profile">
+<div class="container-fluid mt-4 mb-4">
+    <h2>My Profile</h2>
+    <p class="text-muted">Username: <b>{{ username }}</b></p>
+</div>
+
+<form @submit.prevent="save">
+   <div class = "row mb-3">
+        <div class ="col">
+            <label> First Name </label>
+            <input type = "text" class = "form-control" v-model.trim="form.fname" required>
+        </div>
+        <div class = "col">
+            <label> Last Name</label>
+            <input type = "text" class = "form-control" v-model.trim="form.lname" required>
+        </div>
+        <div class = "col">
+            <label> Email </label>
+            	<input type = "email" class = "form-control" v-model.trim="form.email" required>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class = "col">
+            <label> University Name </label>
+			<input type = "text" class = "form-control" v-model.trim="form.university" required>
+        </div>
+        <div class = "col">
+		    <label> Major </label>
+	        <input type = "text" class = "form-control" v-model.trim="form.major" required>
+        </div>
+        <div class = "col">
+            <label> CGPA </label>
+            <input type = "text" class = "form-control" v-model.trim="form.gpa" required>
+        </div>
+    	</div>
+
+    <div class = "row mb-3">
+          <div class = "col">
+            <label> New Password (leave empty to keep the old one) </label>
+            <input type = "password" class = "form-control" v-model="form.password">
+          </div>
+      <div class = "col">
+               <label> Retype New Password </label>
+              <input type = "password" class = "form-control" v-model="form.con_password" :required="form.password !== ''">
+           </div>
+  </div>
+
+    <button type = "submit" class="btn btn-primary">Save Profile</button>
+</form>
+</template>
+{% endraw %}

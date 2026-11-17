@@ -1,0 +1,61 @@
+{% raw %}
+<template id="base">
+    <div class = "container-fluid mt-2">
+       <div class = "row">
+            <div class = "col-12 bg-light p-5 text-center">
+              <div class="container">
+                    <div class="row align-items-center justify-content-center">
+                       <div class="col-auto"><img src="/static/logo.png" style="height: 100px;"></div>
+                      <div class="col-auto"><h1>Examination Management Portal</h1></div>
+                    </div>
+                   </div>
+            </div>
+        </div>
+   </div>
+
+       <nav class="navbar bg-dark">
+        <div class="container d-flex justify-content-between">
+           <div>
+                <a class="navbar-brand" href="#" @click.prevent="go('home')"><img src="/static/logo.png" style="height: 30px;"></a>
+               <a class="me-2 text-white text-decoration-none" href="#" @click.prevent="go('home')">Home</a>
+            </div>
+            	<div>
+                   <template v-if="user">
+                    <span class="text-white me-3">Welcome, {{ user.fname }}!</span>
+                    <a class = "me-2 text-white text-decoration-none" href="#" @click.prevent="go('home')">Dashboard</a>
+                    <a class = "me-2 text-white text-decoration-none" href="#" @click.prevent="logout">Logout</a>
+                 </template>
+                <template v-else>
+                    <a class = "me-2 text-white text-decoration-none" href="#" @click.prevent="go('login')">Login</a>
+                    <a class = "me-2 text-white text-decoration-none" href="#" @click.prevent="go('register')">Register Student</a>
+               </template>
+			</div>
+          </div>
+    </nav>
+
+    <div v-for="msg in messages" class="alert alert-warning">{{ msg }}</div>
+
+    <div v-if="loading" class="container min-vh-100 py-5">Loading...</div>
+    <template v-else-if="!user">
+        <register-stu v-if="page === 'register'"></register-stu>
+        <login v-else @logged-in="setUser"></login>
+    </template>
+    <admin-dashboard v-else-if="user.role === 'admin'" :key="'admin' + viewKey"></admin-dashboard>
+   <student-dashboard v-else-if="user.role === 'student'" :key="'student' + viewKey"></student-dashboard>
+    	<examiner-dashboard v-else-if="user.role === 'examiner'" :key="'examiner' + viewKey"></examiner-dashboard>
+
+    <div class="container-fluid bg-dark text-light text-center">
+        <div class = "row">
+               <div class="col-12 mt-2">
+               <p> All rights reserved. &copy; 2026 </p>
+			</div>
+        </div>
+    </div>
+</template>
+{% endraw %}
+
+<!-- styles used by all the pages -->
+<style>
+    .table-box { max-height: 600px; overflow: auto; }
+    .table-box table { width: 100%; }
+</style>
